@@ -1,0 +1,24 @@
+{
+  "name": "basilica-game-core",
+  "version": "0.1.0",
+  "description": "An open-source game engine for prototyping board and card games — by BasilicaStudiosLLC",
+  "private": true,
+  "workspaces": [
+    "packages/client",
+    "packages/server",
+    "packages/shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm run dev --workspace=packages/client",
+    "dev:server": "npm run dev --workspace=packages/server",
+    "build": "npm run build --workspace=packages/shared && npm run build --workspace=packages/server && npm run build --workspace=packages/client",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "author": "BasilicaStudiosLLC",
+  "license": "MIT"
+}

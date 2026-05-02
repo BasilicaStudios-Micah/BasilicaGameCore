@@ -1,0 +1,140 @@
+// ============================================================
+// BasilicaGameCore — Prisma Schema (PostgreSQL)
+// Implement once you're ready to replace the in-memory store.
+// BasilicaStudiosLLC
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Room ───────────────────────────────────────────────────
+
+model Room {
+  id         String   @id @default(cuid())
+  code       String   @unique @db.VarChar(6)
+  name       String
+  hostId     String
+  maxPlayers Int      @default(8)
+  status     String   @default("waiting")
+  gameDefId  String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  players    RoomPlayer[]
+  gameState  GameState?
+}
+
+model RoomPlayer {
+  id          String  @id @default(cuid())
+  roomId      String
+  playerId    String
+  playerName  String
+  isHost      Boolean @default(false)
+  isConnected Boolean @default(true)
+  metadata    Json    @default("{}")
+  room        Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  @@unique([roomId, playerId])
+}
+
+// ─── Game State ─────────────────────────────────────────────
+
+model GameState {
+  id         String   @id @default(cuid())
+  roomId     String   @unique
+  gameDefId  String
+  turnState  Json
+  scriptCtx  Json     @default("{}")
+  log        Json     @default("[]")
+  startedAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  room       Room     @relation(fields: [roomId], references: [id])
+}
+
+// ─── Game Definition ────────────────────────────────────────
+
+model GameDefinition {
+  id                 String   @id @default(cuid())
+  name               String
+  description        String?
+  author             String
+  version            String   @default("0.1.0")
+  boardDefId         String?
+  deckDefIds         Json     @default("[]")
+  dieDefIds          Json     @default("[]")
+  turnStructureId    String?
+  setupScript        String?
+  winConditionScript String?
+  metadata           Json     @default("{}")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+// ─── Board Definition ───────────────────────────────────────
+
+model BoardDefinition {
+  id              String   @id @default(cuid())
+  name            String
+  rows            Int      @default(8)
+  cols            Int      @default(8)
+  tileSize        Int      @default(64)
+  tileShape       String   @default("square")
+  layers          Json     @default("[]")
+  tileDefinitions Json     @default("[]")
+  metadata        Json     @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ─── Card Definition ────────────────────────────────────────
+
+model CardDefinition {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   @default("action")
+  cost        Int      @default(0)
+  description String   @default("")
+  imageUrl    String?
+  tags        Json     @default("[]")
+  script      String?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Deck Definition ────────────────────────────────────────
+
+model DeckDefinition {
+  id          String   @id @default(cuid())
+  name        String
+  cardEntries Json     @default("[]")
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Die Definition ─────────────────────────────────────────
+
+model DieDefinition {
+  id          String   @id @default(cuid())
+  type        String   @default("d6")
+  faces       Int      @default(6)
+  label       String?
+  customFaces Json?
+  createdAt   DateTime @default(now())
+}
+
+// ─── Turn Structure ─────────────────────────────────────────
+
+model TurnStructure {
+  id        String   @id @default(cuid())
+  name      String
+  phases    Json     @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
