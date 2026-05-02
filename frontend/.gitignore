@@ -1,0 +1,74 @@
+# ============================================
+# Node.js & Dependencies
+# ============================================
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================
+# Environment Variables (NEVER COMMIT THESE!)
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# ============================================
+# Build & Distribution
+# ============================================
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ============================================
+# IDE & Editor
+# ============================================
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+.sublime-workspace
+.sublime-project
+
+# ============================================
+# Database
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+prisma/*.db
+prisma/*.sqlite
+
+# ============================================
+# OS Files
+# ============================================
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# ============================================
+# Testing
+# ============================================
+coverage/
+.nyc_output/
